@@ -20,3 +20,5 @@ Listing price, CMP (Current Market Price), listing gain
 Download buttons for RHP and DRHP PDFs
 Responsive design using Bootstrap
 Clean layout inspired by provided Figma designs
+I used only one file  index.html where all HTML, CSS, JavaScript  and bootstrap code is available 
+thank you 😊 
