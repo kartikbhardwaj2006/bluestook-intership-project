@@ -4,7 +4,7 @@ Welcome to the frontend repository of the IPO Web Application developed during m
 
 About the Project
 
-This is a real-world frontend project built during my internship at Bluestock Fintech. The goal is to present IPO details like company name, price band, open/close dates, and other key financial metrics in an interactive and user-friendly manner.
+This is a real-world frontend project built during my internship at Bluestock Fintech. The goal is to present IPO details like company name, price band, open/close dates, and other key financial metrics in an interactive and user-friendly manner. I done this internship in may 2025 to june 2025 
 
 Tech Stack Used
 
@@ -21,4 +21,4 @@ Download buttons for RHP and DRHP PDFs
 Responsive design using Bootstrap
 Clean layout inspired by provided Figma designs
 I used only one file  index.html where all HTML, CSS, JavaScript  and bootstrap code is available 
-thank you 😊 
+thank you for reading and seeing my project 😊 
