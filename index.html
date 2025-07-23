@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPO Web Application - Bluestock Fintech</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-blue: #1e40af;
+        --secondary-blue: #3b82f6;
+        --success-green: #10b981;
+        --warning-orange: #f59e0b;
+        --danger-red: #ef4444;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8fafc;
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+        color: var(--primary-blue) !important;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .ipo-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .ipo-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .company-logo {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 2px solid #f1f5f9;
+        padding: 5px;
+        background: white;
+    }
+    
+    .company-logo:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .status-upcoming { background-color: #dbeafe; color: var(--primary-blue); }
+    .status-open { background-color: #dcfce7; color: var(--success-green); }
+    .status-closed { background-color: #fef3c7; color: var(--warning-orange); }
+    .status-listed { background-color: #f3e8ff; color: #7c3aed; }
+    
+    .gain-positive { color: var(--success-green); }
+    .gain-negative { color: var(--danger-red); }
+    
+    .filter-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+    }
+    
+    .stats-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--secondary-blue);
+        border-color: var(--secondary-blue);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        color: white;
+    }
+    
+    .detail-row {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 0;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .detail-value {
+        color: #6b7280;
+    }
+    
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+    }
+    
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    
+    .search-box {
+        border-radius: 10px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+    }
+    
+    .search-box:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .ipo-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-chart-line me-2"></i>
+            Bluestock Fintech
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ipos">IPOs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section" id="home">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">IPO Investment Hub</h1>
+                <p class="hero-subtitle">Discover and track the latest Initial Public Offerings with comprehensive data, real-time updates, and expert insights.</p>
+                <div class="mt-4">
+                    <button class="btn btn-light btn-lg me-3" onclick="scrollToSection('ipos')">
+                        <i class="fas fa-search me-2"></i>Explore IPOs
+                    </button>
+                    <button class="btn btn-outline-light btn-lg" onclick="scrollToSection('about')">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="hero-image">
+                        <img src="https://cdn.pixabay.com/photo/2016/11/27/21/42/stock-1863880_1280.jpg" alt="Stock Market" class="img-fluid rounded" style="max-height: 300px; opacity: 0.8;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="container mb-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="stats-card">
+                <div class="stats-number" id="totalIPOs">-</div>
+                <div class="stats-label">Total IPOs</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stats-card">
+                <div class="stats-number" id="openIPOs">-</div>
+                <div class="stats-label">Open IPOs</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stats-card">
+                <div class="stats-number" id="upcomingIPOs">-</div>
+                <div class="stats-label">Upcoming IPOs</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stats-card">
+                <div class="stats-number" id="listedIPOs">-</div>
+                <div class="stats-label">Listed IPOs</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="container" id="ipos">
+    <div class="filter-section">
+        <h3 class="mb-4">
+            <i class="fas fa-filter me-2"></i>Find IPOs
+        </h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Search Company</label>
+                <input type="text" class="form-control search-box" id="searchInput" placeholder="Enter company name...">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Listed">Listed</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Issue Type</label>
+                <select class="form-select" id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="Mainboard">Mainboard</option>
+                    <option value="SME">SME</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-3">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-primary w-100" onclick="clearFilters()">
+                    <i class="fas fa-refresh me-2"></i>Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- IPO Cards Section -->
+<section class="container">
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading IPO data...</p>
+    </div>
+    
+    <div class="row" id="ipoContainer">
+        <!-- IPO cards will be dynamically inserted here -->
+    </div>
+    
+    <div class="no-data" id="noDataMessage" style="display: none;">
+        <i class="fas fa-search" style="font-size: 3rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+        <h4>No IPOs Found</h4>
+        <p>Try adjusting your search criteria or filters.</p>
+    </div>
+    
+    <div class="pagination-container" id="paginationContainer">
+        <!-- Pagination will be inserted here -->
+    </div>
+</section>
+
+<!-- IPO Detail Modal -->
+<div class="modal fade" id="ipoDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">IPO Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<section class="container py-5" id="about">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4">
+            <h2 class="mb-4">About IPO Investment</h2>
+            <p class="lead">Initial Public Offerings (IPOs) represent a company's first sale of stock to the public. When a company decides to go public, it offers shares to investors for the first time.</p>
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-chart-line text-primary me-3" style="font-size: 2rem;"></i>
+                        <div>
+                            <h6 class="mb-1">Growth Potential</h6>
+                            <small class="text-muted">High return opportunities</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-shield-alt text-success me-3" style="font-size: 2rem;"></i>
+                        <div>
+                            <h6 class="mb-1">Regulated Market</h6>
+                            <small class="text-muted">SEBI oversight & protection</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Investment Growth" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2>Why Choose Our Platform?</h2>
+            <p class="lead">Get comprehensive IPO information and make informed investment decisions</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-database text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h5>Real-time Data</h5>
+                    <p class="text-muted">Get up-to-date IPO information including pricing, dates, and performance metrics.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-file-alt text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h5>Document Access</h5>
+                    <p class="text-muted">Download RHP and DRHP documents directly from our platform for detailed analysis.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-bell text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h5>Smart Alerts</h5>
+                    <p class="text-muted">Stay informed with notifications about IPO openings, closings, and listing updates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4">
+                <h3>Stay Updated with IPO News</h3>
+                <p>Subscribe to our newsletter and never miss an important IPO announcement or market update.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <input type="email" class="form-control form-control-lg" placeholder="Enter your email address">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-light btn-lg w-100">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="bg-dark text-white mt-5 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Bluestock Fintech</h5>
+                <p>Your trusted partner for IPO investments and market insights.</p>
+                <p>
+                    <i class="fas fa-envelope me-2"></i>hello@bluestock.in<br>
+                    <i class="fas fa-phone me-2"></i>+91 7038202440
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#home" class="text-white-50">Home</a></li>
+                    <li><a href="#ipos" class="text-white-50">IPOs</a></li>
+                    <li><a href="#about" class="text-white-50">About</a></li>
+                    <li><a href="#contact" class="text-white-50">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center">
+            <p>&copy; 2025 Bluestock Fintech. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Sample IPO data with real company logos - In production, this would come from your Django REST API
+    const sampleIPOData = [
+        {
+            ipo_id: 1,
+            company_name: "Tata Technologies",
+            company_logo: "data:image/png;base64,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",
+            price_band: "₹475-500",
+            open_date: "2025-07-01",
+            close_date: "2025-07-03",
+            issue_size: "₹5,000 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-07-10",
+            status: "Upcoming",
+            ipo_price: 500.00,
+            listing_price: 625.50,
+            listing_gain: 25.10,
+            current_market_price: 732.75,
+            current_return: 46.55,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        {
+            ipo_id: 2,
+            company_name: "Paytm",
+            company_logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAACUCAMAAAAd373qAAAAkFBMVEX///8zRpAAr+8xRI8Are/7/P3N7/z19vrp6/MtQY0gtvCa3fgAtvCqsc+lrc1odq1Rw/Pr+f635/pEVZmx6Posv/I3u/LFyuByzvV6hrdZaKQ5S5NLyPTN0uOOmMG+w9nC6vpxf7OM1/fg4+4kOouDjrlSYqGxuNPd9P2m4vloyfWdpsl41fdgb6lLW5xizfaKHbBcAAAEoklEQVR4nO2Zi3aqOBRAgzECvhCpoHB5SREoQv//74YkhIfS3mlxKp119urqajjBnm1yQgCEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOB/Bnl2AiPRg0B/dg6jSK/mLnh2EmPQr7P5cvXsLEagn2ez2W82IKv17zYgmTn7WQPyYYM1Cf/1cZ/+MbI4M4GOAeGwP3Vdb7rqaZrq4xddJdn08F25iUVtLPFdpf5ncrLlhyJ2vl93UGj2WXbeLWfc4D3LskXlH6zOjAXSX87H4/GcpfST0uz69vZ25Y0xbI0+F82zhENulA2XIt5E7J+5tsN6ltuqQdyiPjGRUfpmLuv8qYJpLo8pSo9Lzvv+aC7Z8bdMJ8GxHqqqMUqAxK/4BqdI5IGYKpUnlypYRt3Po9PLN1Qe3sooaNPnzM0ALXaNUXPcPK52beM8SoHEqnQLLn0yEMNYCqmCZfC2MMCsNWgwO3QMuiy7PZerMRNp0EANlcEYxp7yNYPdYtigj/kyxuB0byBhxx+2Uy/VIDzeYPZnxDwaNJBUmtyAAcYb+b8wmO0fYUDLsTHQWC17r2qNiKjelwzmuw/q4Lbf9QEGVfqtg2qzQrC0osYQgapCPjZID5+PwdqczTvBdWvw5/u1LAxw6flJEot0LryUlZpoKwLaZwZkn62yo0jrz2qVVTcJrcF7kGYHobB8fwlW5iMNbKvaGUSnnkGLe/mLAbse0P0DehEprvhWojFYp1WHfWd0qj3s8nEGqu1WLSW+NSAyRdn8qzFgtAa83Rgc6IKzEFPnSFt789EGUd+AuF7IysBu6uB3Gch5vWNoV6nJG/RmkXxqFtGGvgH9gIkZ9Co5f73Nv28gaZbrup4jTcMAX7ZVOnlnNY2cuxGoDeqcpd4Ee7qBSEhqDIaGgBm4ZUetvYw/36CzqaC7CqKpnSS7laxoA4PzRINwcGcXo0gsoJJD6RigHA/Nr2kZSElbBka8zfO4c0VDSnGvgKdloBa0kOvUQnpDH9XdmAGyyvtBmJIBxkZCkCsmzonm3CyzzAD5hVPvZR9Uye8PMeAJVT9lXiXzqQFyY9tweIE8ZDV9jAHPyLiE7FGF9akBkt2NF8exFxdTGQNshDHFy332IAv54ssdNqCnyqTauSbGVAwKS65uZWRZfNStgdozkAVKIu4PNk83cPsBS1SH7UdR5Bc9g6haYGu0upuUTM1AVDJ27DDUbKc3i5Jm1y1WI2xYZGIGzTUZY/qsonOHU7F9vblvqPe2kzJQ7MHthjC4C8SixCdjgLyvGGDDFw+8p2MQXYb2G8MGWPKaVXY6Bigx7hXUE/uqb+4dsMOfyz/HQONFqd4byBtbUm+gOyZm0HmvoDoXrxVAL/yZ1vzWYM4M0jULz4XBfLQByi+cOLoLyVauFXaXMOGTxS/FK5+ytMPcVzoJLA5r9spmVz/N1c8Hk3I40076lbUOu4y9ibrWsez7AkhxLUY08C0QJXJ7RLJw8wWWGym9U0mwZyzqJ+pEDzi8nfIGj5K0F/tRCOm8oRyK/XhGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAt/gGvcJZvKJrUFQAAAABJRU5ErkJggg==",
+            price_band: "₹2,080-2,150",
+            open_date: "2025-06-20",
+            close_date: "2025-06-22",
+            issue_size: "₹18,300 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-06-29",
+            status: "Open",
+            ipo_price: 2150.00,
+            listing_price: 0,
+            listing_gain: 0,
+            current_market_price: 0,
+            current_return: 0,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        {
+            ipo_id: 3,
+            company_name: "Zomato",
+            company_logo: "data:image/png;base64,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",
+            price_band: "₹72-76",
+            open_date: "2025-05-15",
+            close_date: "2025-05-17",
+            issue_size: "₹9,375 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-05-24",
+            status: "Listed",
+            ipo_price: 76.00,
+            listing_price: 115.00,
+            listing_gain: 51.32,
+            current_market_price: 285.50,
+            current_return: 275.66,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        {
+            ipo_id: 4,
+            company_name: "Nykaa",
+            company_logo: "data:image/jpeg;base64,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7lWJEUGLXrSr1HUnqzluhqBbak0bdqo3bt2O85LHY7Dd56jdigqDI48dpuXH3lbYilPIzrDE52UZKMU8yJwxaBZbRDSkgy/ilcObjr4DTwWf4ttN5q8Q1c3Up5GOflE5jcwWjTJasiZlbXEqlCvKtkm5dJQ8DYUqaOrFyuce7ewEQxHUE6k9yviIoMe7u6l1U5SoFWcfWqS5WTap2F89O/eNaBxI0IH18FZkQpb1pUKsakdUYJBBLUVDaeCNz5nHIMaOOa2PClnFltEdO4Dfv7czhzceXhopVsMTXbbY2B3eGjNfalvM2WI4vO8goKOyvEIiKDTlP6Q7NWXOClloYjM6Fzg5jdcjz+SrVgwZcqmvidX07qelY4Ok3mrgOQHvWqopzNrQxevQt+Qgl+eO8zzpAslzrLsyqpaZ88JiDfV8dkjPl4rv6PLFVW4VNXXwmKSUBjGu1DdSfHh5K6ImZWeKVZWqtsll08QvGshFTSTQHSRhb5heyKDWptPNGL/6YvW9dGLdOS05bWzwPitLwbaJrNZW09TlvnvMj2jjsk5DLyAU6ilvM2l7i1a7p8nJJLqCIig1QREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH/2Q==",
+            price_band: "₹1,085-1,125",
+            open_date: "2025-06-10",
+            close_date: "2025-06-12",
+            issue_size: "₹5,352 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-06-19",
+            status: "Closed",
+            ipo_price: 1125.00,
+            listing_price: 0,
+            listing_gain: 0,
+            current_market_price: 0,
+            current_return: 0,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        {
+            ipo_id: 5,
+            company_name: "LIC of India",
+            company_logo: "data:image/png;base64,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",
+            price_band: "₹902-949",
+            open_date: "2025-08-01",
+            close_date: "2025-08-03",
+            issue_size: "₹21,000 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-08-10",
+            status: "Upcoming",
+            ipo_price: 949.00,
+            listing_price: 0,
+            listing_gain: 0,
+            current_market_price: 0,
+            current_return: 0,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        
+        {
+            ipo_id: 6,
+            company_name: "Infosys",
+            company_logo: "data:image/png;base64,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",
+            price_band: "₹95-100",
+            open_date: "2025-07-15",
+            close_date: "2025-07-17",
+            issue_size: "₹2,500 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-07-24",
+            status: "Upcoming",
+            ipo_price: 100.00,
+            listing_price: 0,
+            listing_gain: 0,
+            current_market_price: 0,
+            current_return: 0,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        },
+        {
+            ipo_id: 7,
+            company_name: "Reliance Industries",
+            company_logo: "data:image/jpeg;base64,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",
+            price_band: "₹2,500-2,800",
+            open_date: "2025-06-25",
+            close_date: "2025-06-27",
+            issue_size: "₹15,000 Cr",
+            issue_type: "Mainboard",
+            listing_date: "2025-07-04",
+            status: "Open",
+            ipo_price: 2800.00,
+            listing_price: 0,
+            listing_gain: 0,
+            current_market_price: 0,
+            current_return: 0,
+            rhp_pdf: "#",
+            drhp_pdf: "#"
+        }
+    ];
+
+    // Global variables
+    let currentIPOData = [...sampleIPOData];
+    let filteredIPOData = [...sampleIPOData];
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        // Simulate loading
+        showLoading();
+        setTimeout(() => {
+            currentIPOData = [...sampleIPOData];
+            filteredIPOData = [...sampleIPOData];
+            hideLoading();
+            updateStats();
+            renderIPOCards();
+            setupEventListeners();
+        }, 1500);
+    });
+
+    // Show loading spinner
+    function showLoading() {
+        document.getElementById('loadingSpinner').style.display = 'block';
+        document.getElementById('ipoContainer').style.display = 'none';
+        document.getElementById('noDataMessage').style.display = 'none';
+    }
+
+    // Hide loading spinner
+    function hideLoading() {
+        document.getElementById('loadingSpinner').style.display = 'none';
+        document.getElementById('ipoContainer').style.display = 'flex';
+    }
+
+    // Update statistics
+    function updateStats() {
+        const stats = {
+            total: currentIPOData.length,
+            open: currentIPOData.filter(ipo => ipo.status === 'Open').length,
+            upcoming: currentIPOData.filter(ipo => ipo.status === 'Upcoming').length,
+            listed: currentIPOData.filter(ipo => ipo.status === 'Listed').length
+        };
+
+        document.getElementById('totalIPOs').textContent = stats.total;
+        document.getElementById('openIPOs').textContent = stats.open;
+        document.getElementById('upcomingIPOs').textContent = stats.upcoming;
+        document.getElementById('listedIPOs').textContent = stats.listed;
+    }
+
+    // Render IPO cards
+    function renderIPOCards() {
+        const container = document.getElementById('ipoContainer');
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedData = filteredIPOData.slice(startIndex, endIndex);
+
+        if (paginatedData.length === 0) {
+            container.innerHTML = '';
+            document.getElementById('noDataMessage').style.display = 'block';
+            document.getElementById('paginationContainer').innerHTML = '';
+            return;
+        }
+
+        document.getElementById('noDataMessage').style.display = 'none';
+
+        container.innerHTML = paginatedData.map(ipo => `
+    <div class="col-lg-6 col-xl-4">
+        <div class="card ipo-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="${ipo.company_logo}" alt="${ipo.company_name}" class="company-logo me-3">
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">${ipo.company_name}</h5>
+                        <span class="status-badge status-${ipo.status.toLowerCase()}">${ipo.status}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Price Band</small>
+                        <div class="fw-bold">${ipo.price_band}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Issue Size</small>
+                        <div class="fw-bold">${ipo.issue_size}</div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Open Date</small>
+                        <div class="fw-bold">${formatDate(ipo.open_date)}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Close Date</small>
+                        <div class="fw-bold">${formatDate(ipo.close_date)}</div>
+                    </div>
+                </div>
+                
+                ${ipo.status === 'Listed' ? `
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Current Price</small>
+                            <div class="fw-bold">₹${ipo.current_market_price}</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Return</small>
+                            <div class="fw-bold ${ipo.current_return >= 0 ? 'gain-positive' : 'gain-negative'}">
+                                ${ipo.current_return >= 0 ? '+' : ''}${ipo.current_return}%
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm flex-grow-1" onclick="showIPODetails(${ipo.ipo_id})">
+                        <i class="fas fa-info-circle me-1"></i>View Details
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="downloadDocument('${ipo.rhp_pdf}', 'RHP')">
+                        <i class="fas fa-download me-1"></i>RHP
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+`).join('');
+
+        renderPagination();
+    }
+
+    // Render pagination
+    function renderPagination() {
+        const totalPages = Math.ceil(filteredIPOData.length / itemsPerPage);
+        const paginationContainer = document.getElementById('paginationContainer');
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let paginationHTML = '<nav><ul class="pagination">';
+        
+        // Previous button
+        paginationHTML += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>
+            </li>
+        `;
+        
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHTML += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                </li>
+            `;
+        }
+        
+        // Next button
+        paginationHTML += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>
+            </li>
+        `;
+        
+        paginationHTML += '</ul></nav>';
+        paginationContainer.innerHTML = paginationHTML;
+    }
+
+    // Change page
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredIPOData.length / itemsPerPage);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderIPOCards();
+            scrollToSection('ipos');
+        }
+    }
+
+    // Show IPO details in modal
+    function showIPODetails(ipoId) {
+        const ipo = currentIPOData.find(item => item.ipo_id === ipoId);
+        if (!ipo) return;
+
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = `
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <img src="${ipo.company_logo}" alt="${ipo.company_name}" class="img-fluid mb-3" style="max-width: 100px;">
+                    <h4>${ipo.company_name}</h4>
+                    <span class="status-badge status-${ipo.status.toLowerCase()}">${ipo.status}</span>
+                </div>
+                <div class="col-md-8">
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Price Band:</div>
+                            <div class="col-sm-8 detail-value">${ipo.price_band}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Issue Size:</div>
+                            <div class="col-sm-8 detail-value">${ipo.issue_size}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Issue Type:</div>
+                            <div class="col-sm-8 detail-value">${ipo.issue_type}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Open Date:</div>
+                            <div class="col-sm-8 detail-value">${formatDate(ipo.open_date)}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Close Date:</div>
+                            <div class="col-sm-8 detail-value">${formatDate(ipo.close_date)}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="row">
+                            <div class="col-sm-4 detail-label">Listing Date:</div>
+                            <div class="col-sm-8 detail-value">${formatDate(ipo.listing_date)}</div>
+                        </div>
+                    </div>
+                    ${ipo.ipo_price > 0 ? `
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-sm-4 detail-label">IPO Price:</div>
+                                <div class="col-sm-8 detail-value">₹${ipo.ipo_price}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${ipo.listing_price > 0 ? `
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-sm-4 detail-label">Listing Price:</div>
+                                <div class="col-sm-8 detail-value">₹${ipo.listing_price}</div>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-sm-4 detail-label">Listing Gain:</div>
+                                <div class="col-sm-8 detail-value ${ipo.listing_gain >= 0 ? 'gain-positive' : 'gain-negative'}">
+                                    ${ipo.listing_gain >= 0 ? '+' : ''}${ipo.listing_gain}%
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${ipo.current_market_price > 0 ? `
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-sm-4 detail-label">Current Price:</div>
+                                <div class="col-sm-8 detail-value">₹${ipo.current_market_price}</div>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-sm-4 detail-label">Current Return:</div>
+                                <div class="col-sm-8 detail-value ${ipo.current_return >= 0 ? 'gain-positive' : 'gain-negative'}">
+                                    ${ipo.current_return >= 0 ? '+' : ''}${ipo.current_return}%
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h6 class="mb-3">Download Documents</h6>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-outline-primary" onclick="downloadDocument('${ipo.rhp_pdf}', 'RHP')">
+                            <i class="fas fa-file-pdf me-2"></i>Download RHP
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="downloadDocument('${ipo.drhp_pdf}', 'DRHP')">
+                            <i class="fas fa-file-pdf me-2"></i>Download DRHP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const modal = new bootstrap.Modal(document.getElementById('ipoDetailModal'));
+        modal.show();
+    }
+
+    // Download document function
+    function downloadDocument(url, type) {
+        if (url === '#') {
+            alert(`${type} document will be available soon!`);
+            return;
+        }
+        window.open(url, '_blank');
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Search input
+        document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+        
+        // Filter dropdowns
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+    }
+
+    // Apply filters
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const typeFilter = document.getElementById('typeFilter').value;
+
+        filteredIPOData = currentIPOData.filter(ipo => {
+            const matchesSearch = ipo.company_name.toLowerCase().includes(searchTerm);
+            const matchesStatus = !statusFilter || ipo.status === statusFilter;
+            const matchesType = !typeFilter || ipo.issue_type === typeFilter;
+            
+            return matchesSearch && matchesStatus && matchesType;
+        });
+
+        currentPage = 1;
+        renderIPOCards();
+    }
+
+    // Clear filters
+    function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('typeFilter').value = '';
+        filteredIPOData = [...currentIPOData];
+        currentPage = 1;
+        renderIPOCards();
+    }
+
+    // Scroll to section
+    function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
+
+    // Format date
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    // Debounce function for search
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Handle image load errors
+    document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'IMG' && e.target.classList.contains('company-logo')) {
+            // Fallback to a placeholder if company logo fails to load
+            const companyName = e.target.alt;
+            const initials = companyName.split(' ').map(word => word[0]).join('').substring(0, 2);
+            e.target.src = `https://via.placeholder.com/60x60/1e40af/ffffff?text=${initials}`;
+        }
+    }, true);
+
+    // Add loading states for better UX
+    function showCardLoading() {
+        const container = document.getElementById('ipoContainer');
+        container.innerHTML = Array(6).fill(0).map(() => `
+            <div class="col-lg-6 col-xl-4">
+                <div class="card ipo-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-light rounded me-3" style="width: 60px; height: 60px;"></div>
+                            <div class="flex-grow-1">
+                                <div class="bg-light rounded mb-2" style="height: 20px; width: 70%;"></div>
+                                <div class="bg-light rounded" style="height: 16px; width: 40%;"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="bg-light rounded mb-1" style="height: 12px; width: 60%;"></div>
+                                <div class="bg-light rounded" style="height: 16px; width: 80%;"></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-light rounded mb-1" style="height: 12px; width: 60%;"></div>
+                                <div class="bg-light rounded" style="height: 16px; width: 80%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>
